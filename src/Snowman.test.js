@@ -34,16 +34,45 @@ test("Show you lose after", function () {
 
 })
 
+describe("correct and incorrect guesses are registered correctly", function() {
+  test("correct guesses work", function() {
+    const {container, debug} = render(
+      <Snowman words={["apple"]}/>
+    )
+    const buttons = container.querySelectorAll("button");
 
-// test("counts correctly when tails appears", function() {
-//   const { container } = render(<CoinContainer />);
+    const img = container.querySelector(".Snowman-image");
+    const initialAlt = img.getAttribute("alt");
 
-//   const button = container.querySelector("button");
-//   fireEvent.click(button);
-//   fireEvent.click(button);
+    fireEvent.click(buttons[0]); // "a" -> correct guess for "apple"
 
-//   expect(container.querySelector("img[alt='head']")).not.toBeInTheDocument();
-//   expect(container.querySelector("img[alt='tail']")).toBeInTheDocument();
-//   expect(container.querySelector("p"))
-//     .toHaveTextContent("Out of 2 flips, there have been 1 heads and 1 tails.");
-// });
+    const numWrong = container.querySelector(".Snowman-num-wrong");
+    const snowmanWord = container.querySelector(".Snowman-word");
+
+    expect(numWrong).toHaveTextContent("0");
+    expect(snowmanWord).toHaveTextContent("a");
+    expect(img.getAttribute("alt")).toEqual("0");
+    expect(img.getAttribute("alt")).toEqual(initialAlt);
+  })
+
+  test("incorrect guesses work", function() {
+    const {container, debug} = render(
+      <Snowman words={["apple"]}/>
+    )
+    const buttons = container.querySelectorAll("button");
+
+    const img = container.querySelector(".Snowman-image");
+    const initialAlt = img.getAttribute("alt");
+
+    fireEvent.click(buttons[25]); // "z" -> incorrect guess for "apple"
+
+    const numWrong = container.querySelector(".Snowman-num-wrong");
+    const snowmanWord = container.querySelector(".Snowman-word");
+    // debug(container);
+
+    expect(numWrong).toHaveTextContent("1");
+    expect(snowmanWord).not.toHaveTextContent("z");
+    expect(img.getAttribute("alt")).toEqual("1");
+    expect(img.getAttribute("alt")).not.toEqual(initialAlt);
+  })
+});
